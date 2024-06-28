@@ -1,5 +1,4 @@
 #include "databasehandler.h"
-
 #include <QStandardPaths>
 
 DatabaseHandler::DatabaseHandler(QObject *parent) : QObject{parent} {
@@ -60,4 +59,73 @@ int DatabaseHandler::getThisMonthCount() {
   }
   qDebug() << "query failed";
   return 0;
+}
+
+QList<QPair<QString, int>> DatabaseHandler::getTotalSpentGroupByDate() {
+    QList<QPair<QString, int>> result;
+    QSqlQuery query;
+    if (!query.exec(queries::totalSpentGroupByDateStr)) {
+        qDebug() << "query failed :" << query.lastError();
+    }
+    while (query.next()) {
+        QString date = query.value(0).toDate().toString("yyyy-MM-dd");
+        int totalSpent = query.value(1).toInt();
+        result.append(qMakePair(date, totalSpent));
+    }
+
+    QDate currentDate = QDate::currentDate();
+    for (int i = 0; i < 7; ++i) {
+        QString dateStr = currentDate.addDays(-i).toString("yyyy-MM-dd");
+        bool found = false;
+        for (const auto &pair : result) {
+            if (pair.first == dateStr) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            result.append(qMakePair(dateStr, 0));
+        }
+    }
+
+    std::sort(result.begin(), result.end(), [](const QPair<QString, int> &a, const QPair<QString, int> &b) {
+        return a.first < b.first;
+    });
+
+    return result;
+}
+
+QList<QPair<QString, int>> DatabaseHandler::getSpentGroupByCategory(const QString &date) {
+    QList<QPair<QString, int>> result;
+    QSqlQuery query;
+    query.prepare(queries::selectSpentGroupByCategoryStr);
+    query.bindValue(":date", date);
+    if (!query.exec()) {
+        qDebug() << "query failed :" << query.lastError();
+        return result;
+    }
+
+    while (query.next()) {
+        QString category = query.value(0).toString();
+        int totalSpent = query.value(1).toInt();
+        result.append(qMakePair(category, totalSpent));
+    }
+
+    return result;
+}
+
+QList<QPair<QString, int>> DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
+    QList<QPair<QString, int>> result;
+    QSqlQuery query;
+    query.prepare(queries::selectSpentGroupByCategoryForMonthStr);
+    query.addBindValue(month);
+    if (!query.exec()) {
+        qDebug() << "query failed :" << query.lastError();
+    }
+    while (query.next()) {
+        QString category = query.value(0).toString();
+        int totalSpent = query.value(1).toInt();
+        result.append(qMakePair(category, totalSpent));
+    }
+    return result;
 }

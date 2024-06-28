@@ -1,0 +1,29 @@
+{
+	"BUILD_DIR" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/cashnote_autogen",
+	"CMAKE_BINARY_DIR" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "F:/aa/Documents/GitHub/cashnote",
+	"CMAKE_SOURCE_DIR" : "F:/aa/Documents/GitHub/cashnote",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/cashnote_autogen/include",
+	"INPUTS" : 
+	[
+		"F:/aa/Documents/GitHub/cashnote/style.qss",
+		"F:/aa/Documents/GitHub/cashnote/icons/icon2.png",
+		"F:/aa/Documents/GitHub/cashnote/icons/cashnote.png",
+		"F:/aa/Documents/GitHub/cashnote/icons/icon1.png",
+		"F:/aa/Documents/GitHub/cashnote/icons/icon0.png"
+	],
+	"LOCK_FILE" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/cashnote_autogen.dir/AutoRcc_resource_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "resource" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_resource.cpp",
+	"RCC_EXECUTABLE" : "D:/Users/aa/AppData/Local/Programs/Qt/6.6.3/mingw_64/./bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "F:/aa/Documents/GitHub/cashnote/build/Desktop_Qt_6_6_3_MinGW_64_bit-Debug/CMakeFiles/cashnote_autogen.dir/AutoRcc_resource_EWIEGA46WW_Used.txt",
+	"SOURCE" : "F:/aa/Documents/GitHub/cashnote/resource.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}

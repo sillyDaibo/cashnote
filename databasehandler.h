@@ -5,6 +5,8 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
+#include <QPair>
+#include <QDate>
 
 class DatabaseHandler : public QObject {
   Q_OBJECT
@@ -15,6 +17,9 @@ public:
   int getThisMonthTotalSpent();
   int getThisMonthTotalEarned();
   int getThisMonthCount();
+  QList<QPair<QString, int>> getTotalSpentGroupByDate();
+  QList<QPair<QString, int>> getSpentGroupByCategory(const QString &date);
+  QList<QPair<QString, int>> getSpentGroupByCategoryForMonth(const QString &month);
 
 signals:
 };
@@ -65,6 +70,30 @@ WHERE d BETWEEN date('now', 'start of month') \
   AND date ('now', 'start of month', '+1 month', '-1 day');\
 ";
 
-} // namespace queries
+const QString totalSpentGroupByDateStr = "\
+SELECT d, sum(val) AS total_spent \
+FROM record \
+WHERE d BETWEEN date('now', '-6 days') AND date('now', 'localtime') \
+GROUP BY d \
+ORDER BY d DESC LIMIT 7;\
+";
+
+const QString selectSpentGroupByCategoryStr = "\
+SELECT c.cname, sum(r.val) AS total_spent \
+FROM record r \
+JOIN category c ON r.cid = c.cid \
+WHERE r.d = :date \
+GROUP BY r.d, r.cid \
+ORDER BY r.d, c.cname;\
+";
+
+const QString selectSpentGroupByCategoryForMonthStr = "\
+SELECT cname, sum(val) AS total_spent \
+FROM record NATURAL JOIN category \
+WHERE strftime('%Y-%m', d) = ? \
+GROUP BY cid;";
+}
+
+// namespace queries
 
 #endif // DATABASEHANDLER_H

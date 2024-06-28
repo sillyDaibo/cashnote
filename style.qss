@@ -34,7 +34,7 @@ SideBar#mySideBar {
 
 QWidget#Widget3 {
     background-color: yellow;
-    border-image: url(:/icons/cashnote);
+    /* border-image: url(:/icons/cashnote); */
 }
 
 QLabel#Label2 {

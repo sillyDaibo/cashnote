@@ -22,14 +22,11 @@ Widget::Widget(QWidget *parent) : QWidget(parent) {
   dataWidget->setObjectName("dataWidget");
   hlayout->addWidget(dataWidget);
 
-  QWidget *widget2 = new QWidget(this);
-  widget2->setObjectName("Widget2");
-  QLabel *label2 = new QLabel(widget2);
-  label2->setText("hello2");
-  label2->setObjectName("Label2");
-
   widget1 = new MainDataWidget(dbHandler, this);
   widget1->setObjectName("Widget1");
+
+  widget2 = new ChartWidget(dbHandler,this);
+  widget2->setObjectName("Widget2");
 
   widget3 = new QWidget(this);
   widget3->setObjectName("Widget3");
