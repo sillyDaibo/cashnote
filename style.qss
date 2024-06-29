@@ -75,4 +75,12 @@ QWidget#MainDataWidget-totalWidget>QLabel {
 #MainDataWidget-tableWidget {
     min-width: 700px;
 }
+
+#MainDataWidget-infoTextEdit {
+    max-height: 100px;
+}
+
+#MainDataWidget-editWidget {
+    max-width: 300px;
+}
 /* End Widget1 */

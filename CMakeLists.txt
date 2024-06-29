@@ -36,6 +36,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         callgpt.cpp
         ChartWidget.h
         ChartWidget.cpp
+        dataitem.h dataitem.cpp
+
 
     )
 # Define target properties for Android with Qt 6 as:

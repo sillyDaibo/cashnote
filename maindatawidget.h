@@ -3,9 +3,18 @@
 
 #include "databasehandler.h"
 #include "qboxlayout.h"
+#include "qdatetimeedit.h"
+#include "qlistwidget.h"
+#include "qtmetamacros.h"
 #include <QBoxLayout>
+#include <QComboBox>
+#include <QDateEdit>
 #include <QLabel>
+#include <QListWidget>
+#include <QPushButton>
+#include <QSpinBox>
 #include <QTableWidget>
+#include <QTextEdit>
 #include <QWidget>
 
 class MainDataWidget : public QWidget {
@@ -17,11 +26,13 @@ public:
 signals:
 
 private:
+  int currentId;
   QVBoxLayout *vLayout;
   QHBoxLayout *hLayoutAbove;
   QVBoxLayout *totalWidgetLayout;
   QVBoxLayout *totalNumWidgetLayout;
   QHBoxLayout *belowWidgetLayout;
+  QVBoxLayout *editWidgetLayout;
   QLabel *earnedBar;
   QLabel *spentBar;
   QLabel *earnedLabel;
@@ -33,11 +44,26 @@ public:
   QWidget *logoWidget;
   QWidget *totalWidget;
   QWidget *totalNumWidget;
-  QTableWidget *tableWidget;
+  QListWidget *listWidget;
   QWidget *editWidget;
   DatabaseHandler *dbHandler;
+  QComboBox *categoryComboBox;
+  QSpinBox *priceSpinBox;
+  QDateEdit *dateEdit;
+  QTextEdit *infoTextEdit;
+  QPushButton *savePushButton;
+  QPushButton *updatePushButton;
+
+  void drawListWidget();
+  void deleteItem(QListWidgetItem *item);
   void setThisMonthWidget();
-  void showTableWidget();
+  void addRecord();
+  void refresh();
+
+public slots:
+  void onSaveButtonClicked();
+  void onUpdateButtonClicked();
+  void onItemSelectionChanged();
 };
 
 #endif // MAINDATAWIDGET_H

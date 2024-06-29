@@ -62,70 +62,133 @@ int DatabaseHandler::getThisMonthCount() {
 }
 
 QList<QPair<QString, int>> DatabaseHandler::getTotalSpentGroupByDate() {
-    QList<QPair<QString, int>> result;
-    QSqlQuery query;
-    if (!query.exec(queries::totalSpentGroupByDateStr)) {
-        qDebug() << "query failed :" << query.lastError();
-    }
-    while (query.next()) {
-        QString date = query.value(0).toDate().toString("yyyy-MM-dd");
-        int totalSpent = query.value(1).toInt();
-        result.append(qMakePair(date, totalSpent));
-    }
+  QList<QPair<QString, int>> result;
+  QSqlQuery query;
+  if (!query.exec(queries::totalSpentGroupByDateStr)) {
+    qDebug() << "query failed :" << query.lastError();
+  }
+  while (query.next()) {
+    QString date = query.value(0).toDate().toString("yyyy-MM-dd");
+    int totalSpent = query.value(1).toInt();
+    result.append(qMakePair(date, totalSpent));
+  }
 
-    QDate currentDate = QDate::currentDate();
-    for (int i = 0; i < 7; ++i) {
-        QString dateStr = currentDate.addDays(-i).toString("yyyy-MM-dd");
-        bool found = false;
-        for (const auto &pair : result) {
-            if (pair.first == dateStr) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            result.append(qMakePair(dateStr, 0));
-        }
+  QDate currentDate = QDate::currentDate();
+  for (int i = 0; i < 7; ++i) {
+    QString dateStr = currentDate.addDays(-i).toString("yyyy-MM-dd");
+    bool found = false;
+    for (const auto &pair : result) {
+      if (pair.first == dateStr) {
+        found = true;
+        break;
+      }
     }
+    if (!found) {
+      result.append(qMakePair(dateStr, 0));
+    }
+  }
 
-    std::sort(result.begin(), result.end(), [](const QPair<QString, int> &a, const QPair<QString, int> &b) {
-        return a.first < b.first;
-    });
+  std::sort(result.begin(), result.end(),
+            [](const QPair<QString, int> &a, const QPair<QString, int> &b) {
+              return a.first < b.first;
+            });
 
-    return result;
+  return result;
 }
 
-QList<QPair<QString, int>> DatabaseHandler::getSpentGroupByCategory(const QString &date) {
-    QList<QPair<QString, int>> result;
-    QSqlQuery query;
-    query.prepare(queries::selectSpentGroupByCategoryStr);
-    query.bindValue(":date", date);
-    if (!query.exec()) {
-        qDebug() << "query failed :" << query.lastError();
-        return result;
-    }
-
-    while (query.next()) {
-        QString category = query.value(0).toString();
-        int totalSpent = query.value(1).toInt();
-        result.append(qMakePair(category, totalSpent));
-    }
-
+QList<QPair<QString, int>>
+DatabaseHandler::getSpentGroupByCategory(const QString &date) {
+  QList<QPair<QString, int>> result;
+  QSqlQuery query;
+  query.prepare(queries::selectSpentGroupByCategoryStr);
+  query.bindValue(":date", date);
+  if (!query.exec()) {
+    qDebug() << "query failed :" << query.lastError();
     return result;
+  }
+
+  while (query.next()) {
+    QString category = query.value(0).toString();
+    int totalSpent = query.value(1).toInt();
+    result.append(qMakePair(category, totalSpent));
+  }
+
+  return result;
 }
 
-QList<QPair<QString, int>> DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
-    QList<QPair<QString, int>> result;
-    QSqlQuery query;
-    query.prepare(queries::selectSpentGroupByCategoryForMonthStr);
-    query.addBindValue(month);
-    if (!query.exec()) {
-        qDebug() << "query failed :" << query.lastError();
-    }
-    while (query.next()) {
-        QString category = query.value(0).toString();
-        int totalSpent = query.value(1).toInt();
-        result.append(qMakePair(category, totalSpent));
-    }
-    return result;
+QList<QPair<QString, int>>
+DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
+  QList<QPair<QString, int>> result;
+  QSqlQuery query;
+  query.prepare(queries::selectSpentGroupByCategoryForMonthStr);
+  query.addBindValue(month);
+  if (!query.exec()) {
+    qDebug() << "query failed :" << query.lastError();
+  }
+  while (query.next()) {
+    QString category = query.value(0).toString();
+    int totalSpent = query.value(1).toInt();
+    result.append(qMakePair(category, totalSpent));
+  }
+  return result;
+}
+
+int DatabaseHandler::insertRecord(const QDate &date, int spent, int category,
+                                  const QString &description) {
+  QSqlQuery query;
+  QString queryStr = queries::insertRecordStr.arg(date.toString("yyyy-MM-dd"))
+                         .arg(spent)
+                         .arg(category)
+                         .arg(description);
+  qDebug() << queryStr;
+  if (!query.exec(queryStr)) {
+    qDebug() << "insert failed :" << query.lastError();
+    return -1;
+  }
+  qDebug() << "insert success";
+  return 0;
+}
+
+int DatabaseHandler::deleteRecord(int id) {
+  QSqlQuery query;
+  QString queryStr = queries::deleteRecordStr.arg(id);
+  if (!query.exec(queryStr)) {
+    qDebug() << "delete failed :" << query.lastError();
+    return -1;
+  }
+  qDebug() << "delete success";
+  return 0;
+}
+
+QList<QPair<QString, int>> DatabaseHandler::getAllCategories() {
+  QList<QPair<QString, int>> result;
+  QSqlQuery query;
+  query.prepare(queries::selectAllCategorieStr);
+  if (!query.exec()) {
+    qDebug() << "query failed :" << query.lastError();
+  }
+  while (query.next()) {
+    int cid = query.value(0).toInt();
+    QString category = query.value(1).toString();
+    result.append(qMakePair(category, cid));
+  }
+  return result;
+}
+
+int DatabaseHandler::updateRecord(int id, const QDate &date, int spent,
+                                  int category, const QString &description) {
+  if (id <= 0)
+    return -1;
+  QSqlQuery query;
+  QString queryStr = queries::updateRecordStr.arg(date.toString("yyyy-MM-dd"))
+                         .arg(spent)
+                         .arg(category)
+                         .arg(description)
+                         .arg(id);
+  if (!query.exec(queryStr)) {
+    qDebug() << "update failed :" << query.lastError();
+    return -1;
+  }
+  qDebug() << "update success";
+  return 0;
 }
