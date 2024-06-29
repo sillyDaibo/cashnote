@@ -109,6 +109,9 @@ DatabaseHandler::getSpentGroupByCategory(const QString &date) {
 
   while (query.next()) {
     QString category = query.value(0).toString();
+    if (category == "收入"){
+        continue;
+    }
     int totalSpent = query.value(1).toInt();
     result.append(qMakePair(category, totalSpent));
   }
@@ -127,6 +130,9 @@ DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
   }
   while (query.next()) {
     QString category = query.value(0).toString();
+    if (category == "收入"){
+        continue;
+    }
     int totalSpent = query.value(1).toInt();
     result.append(qMakePair(category, totalSpent));
   }
