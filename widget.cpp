@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "maindatawidget.h"
+#include "databasehandler.h"
 #include <QLabel>
 #include <QJsonParseError>
 #include <QJsonDocument>
@@ -53,9 +54,9 @@ Widget::Widget(QWidget *parent) : QWidget(parent) {
   QHBoxLayout *hLayout = new QHBoxLayout();
 
   // 左侧展示文本框
-  QTextEdit *leftTextEdit = new QTextEdit(widget3);
+  leftTextEdit = new QTextEdit(widget3);
   leftTextEdit->setReadOnly(true);
-  leftTextEdit->setText("这是原始数据，展示给用户看的...\n测试用数据：\n本月的支出：\n饮食10%，\n娱乐70%，\n交通10%，\n其余10%。");
+  leftTextEdit->setText("您近期的消费数据将会展示在这里。\n请在网络畅通环境下使用该功能。");
   leftTextEdit->setStyleSheet(
       "QTextEdit {"
       "    font-size: 16px;"
@@ -93,7 +94,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent) {
   network = new NetWork();
 
   // 添加按钮并连接到槽函数
-  QPushButton *callNetworkButton = new QPushButton("Click to get analysis.", widget3);
+  QPushButton *callNetworkButton = new QPushButton("点击按钮获得分析结果", widget3);
   vLayout->addWidget(callNetworkButton);
   connect(callNetworkButton, &QPushButton::clicked, this, &Widget::onCallNetwork);
 
@@ -148,10 +149,28 @@ void Widget::onCallNetwork()
     qDebug() << "CALLING>>>";
     textEdit->setText("分析中，请稍等。。。");
     // 调用 Network 类中的方法
-    QString result = network->handle_SetEnquireText("下方是某人本月的支出：饮食10%，娱乐70%，交通10%，其余10%。对他给出简短的消费建议和生活指南。注意直接给出纯文本，不要带markdown格式。");
+    QString str1 = "下方是某人最近的支出各项占比：";
+    QDate queryDate = QDate::currentDate();
+    QStringList dataList = dbHandler->getCategorySpentPercentageForMonth(queryDate.toString("yyyy-MM"));
+    QString realData = "";
+    for (const auto &eachRecord : dataList) {
+        QString newline = "\n";
+        realData += eachRecord+newline;
+    }
+    if(realData.length()<10){
+        leftTextEdit->setText("您最近收支数据较少。");
+        textEdit->setText("近期数据较少，暂时无法得出有效的分析。");
+        return;
+    }
+    QString display = "您最近的消费情况是：\n" + realData;
+    leftTextEdit->setText(display);
+    QString str2 = "对他给出简短的消费建议和生活指南。直接给出纯文本，不要带markdown格式,不要加粗斜体。";
+    QString query =  str1 + realData + str2;
+    QString result = network->handle_SetEnquireText(query);
     qDebug() << "RECEIVE<<<";
     // 显示结果到 label3
     textEdit->setText(result);
+
 
 }
 

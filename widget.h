@@ -33,9 +33,11 @@ private:
     MainDataWidget *widget1;
     ChartWidget *widget2;
     DatabaseHandler *dbHandler;
-    QTextEdit *textEdit; // 用于窗口3显示文本的标签
 
-    NetWork *network;  // 声明 Network 类的实例
     QChartView *chartView;
+
+    QTextEdit *textEdit; // 用于窗口3显示文本的标签
+    QTextEdit *leftTextEdit;
+    NetWork *network;  // 声明 Network 类的实例
 };
 #endif // WIDGET_H
