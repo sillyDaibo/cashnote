@@ -16,6 +16,9 @@ class ChartWidget : public QWidget {
     Q_OBJECT
 public:
     explicit ChartWidget(DatabaseHandler *dbHandler, QWidget *parent = nullptr);
+    void drawBarChart(const QList<QPair<QString, int>> &data);
+    void drawPieChart(const QList<QPair<QString, int>> &data);
+    void handleQuery();
 
 private:
     QChartView *barChartView;
@@ -26,9 +29,6 @@ private:
     QLabel *dateInputLabel;
     QLineEdit *dateInput;
     QPushButton *submitButton;
-    void drawBarChart(const QList<QPair<QString, int>> &data);
-    void drawPieChart(const QList<QPair<QString, int>> &data);
-    void handleQuery();
 };
 
 #endif // CHARTWIDGET_H

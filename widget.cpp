@@ -134,7 +134,12 @@ Widget::Widget(QWidget *parent) : QWidget(parent) {
   dataWidget->addWidget(widget3);
 
   connect(mySidebar->buttonGroup, &QButtonGroup::idClicked, dataWidget, &QStackedWidget::setCurrentIndex);
-
+  connect(mySidebar->buttonGroup, &QButtonGroup::idClicked, dataWidget, [this](int index){
+      if (index != 1)
+          return;
+      QList<QPair<QString, int>> data = dbHandler->getTotalSpentGroupByDate();
+      widget2->drawBarChart(data);
+  });
 }
 
 // 槽函数，用于处理按钮点击事件

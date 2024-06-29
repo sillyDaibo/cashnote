@@ -7,7 +7,7 @@ DataItemWidget::DataItemWidget(int id, int cid, int price, const QDate &date,
       description(description), QWidget{parent} {
   layout = new QHBoxLayout(this);
 
-  dateLabel = new QLabel(date.toString("MM-dd"), this);
+  dateLabel = new QLabel(date.toString("yyyy-MM-dd"), this);
   layout->addWidget(dateLabel);
 
   categoryLabel = new QLabel(categoryName, this);

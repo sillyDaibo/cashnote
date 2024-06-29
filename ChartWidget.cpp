@@ -36,8 +36,8 @@ ChartWidget::ChartWidget(DatabaseHandler *dbHandler_, QWidget *parent) : QWidget
     rightWidget->setLayout(rightLayout);
 
     // 将左右两个 widget 添加到水平布局中
-    layout->addWidget(leftWidget);
-    layout->addWidget(rightWidget);
+    layout->addWidget(leftWidget,1);
+    layout->addWidget(rightWidget,1);
 
     setLayout(layout);
 

@@ -21,6 +21,7 @@ public:
   QList<QPair<QString, int>> getSpentGroupByCategory(const QString &date);
   QList<QPair<QString, int>>
   getSpentGroupByCategoryForMonth(const QString &month);
+  QStringList getCategorySpentPercentageForMonth(const QString &month);
   int insertRecord(const QDate &date, int spent, int category,
                    const QString &description = "");
   int deleteRecord(int id);
@@ -117,8 +118,6 @@ FROM category;\
 const QString selectRecordStr = "\
 SELECT id, cid, val, d, description, cname \
 FROM record NATURAL JOIN category \
-WHERE d BETWEEN date('now', 'start of month') \
-    AND date('now', 'start of month', '+1 month', '-1 day') \
 ";
 
 const QString updateRecordStr = "\
