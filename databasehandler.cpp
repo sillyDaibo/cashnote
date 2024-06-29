@@ -133,6 +133,23 @@ DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
   return result;
 }
 
+QStringList DatabaseHandler::getCategorySpentPercentageForMonth(const QString &month) {
+    QList<QPair<QString, int>> data = getSpentGroupByCategoryForMonth(month);
+    int sum = 0;
+    for (const auto &pair : data) {
+        sum += pair.second;
+    }
+
+    QStringList result;
+    for (const auto &pair : data) {
+        double percentage = (static_cast<double>(pair.second) / sum) * 100;
+        QString formattedString = QString("%1: %2%").arg(pair.first).arg(percentage, 0, 'f', 2);
+        result.append(formattedString);
+    }
+
+    return result;
+}
+
 int DatabaseHandler::insertRecord(const QDate &date, int spent, int category,
                                   const QString &description) {
   QSqlQuery query;
