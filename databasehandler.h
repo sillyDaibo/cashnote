@@ -51,6 +51,11 @@ FOREIGN KEY(cid) REFERENCES category(cid)\
 );\
 ";
 
+const QString insertBasicCategoryStr = "\
+INSERT INTO category(cname) VALUES \
+('饮食'), ('娱乐'), ('收入'), ('购物'), ('其他');\
+";
+
 const QString selectThisMonthTotalEarnedStr = "\
 SELECT ifnull(sum(val), 0) AS result FROM record \
 WHERE d BETWEEN date('now', 'start of month') \

@@ -5,7 +5,7 @@ DatabaseHandler::DatabaseHandler(QObject *parent) : QObject{parent} {
   db = QSqlDatabase::addDatabase("QSQLITE");
   QString location =
       QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-  db.setDatabaseName(location + QString("/cashnote.db"));
+  db.setDatabaseName(location + QString("/cashnote1.db"));
   if (!db.open()) {
     qDebug() << "cannot connect to database";
   } else {
@@ -13,10 +13,20 @@ DatabaseHandler::DatabaseHandler(QObject *parent) : QObject{parent} {
   }
   QSqlQuery query;
   if (!query.exec(queries::createCategoryTableStr)) {
-    qDebug() << "query failed :" << query.lastError();
+    qDebug() << "query create failed :" << query.lastError();
   }
   if (!query.exec(queries::createRecordTableStr)) {
-    qDebug() << "query failed :" << query.lastError();
+    qDebug() << "query create failed :" << query.lastError();
+  }
+  if (!query.exec(queries::selectAllCategorieStr)) {
+    qDebug() << "query select all category failed :" << query.lastError();
+  }
+  if (!query.next()) {
+    if (!query.exec(queries::insertBasicCategoryStr)) {
+      qDebug() << "query insert record failed :" << query.lastError();
+    } else {
+      qDebug() << "Category initialized";
+    }
   }
 }
 
@@ -133,21 +143,23 @@ DatabaseHandler::getSpentGroupByCategoryForMonth(const QString &month) {
   return result;
 }
 
-QStringList DatabaseHandler::getCategorySpentPercentageForMonth(const QString &month) {
-    QList<QPair<QString, int>> data = getSpentGroupByCategoryForMonth(month);
-    int sum = 0;
-    for (const auto &pair : data) {
-        sum += pair.second;
-    }
+QStringList
+DatabaseHandler::getCategorySpentPercentageForMonth(const QString &month) {
+  QList<QPair<QString, int>> data = getSpentGroupByCategoryForMonth(month);
+  int sum = 0;
+  for (const auto &pair : data) {
+    sum += pair.second;
+  }
 
-    QStringList result;
-    for (const auto &pair : data) {
-        double percentage = (static_cast<double>(pair.second) / sum) * 100;
-        QString formattedString = QString("%1: %2%").arg(pair.first).arg(percentage, 0, 'f', 2);
-        result.append(formattedString);
-    }
+  QStringList result;
+  for (const auto &pair : data) {
+    double percentage = (static_cast<double>(pair.second) / sum) * 100;
+    QString formattedString =
+        QString("%1: %2%").arg(pair.first).arg(percentage, 0, 'f', 2);
+    result.append(formattedString);
+  }
 
-    return result;
+  return result;
 }
 
 int DatabaseHandler::insertRecord(const QDate &date, int spent, int category,

@@ -136,10 +136,12 @@ void MainDataWidget::setThisMonthWidget() {
   }
   if (earned >= spent) {
     spentBar->setMaximumWidth(std::max(spent * 300 / earned, MIN_WIDTH));
+    earnedBar->setMaximumWidth(300);
     return;
   }
   if (earned < spent) {
     earnedBar->setMaximumWidth(std::max(earned * 300 / spent, MIN_WIDTH));
+    spentBar->setMaximumWidth(300);
     return;
   }
 }
