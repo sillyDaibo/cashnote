@@ -5,7 +5,7 @@ DatabaseHandler::DatabaseHandler(QObject *parent) : QObject{parent} {
   db = QSqlDatabase::addDatabase("QSQLITE");
   QString location =
       QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-  db.setDatabaseName(location + QString("/cashnote1.db"));
+  db.setDatabaseName(location + QString("/cashnote.db"));
   if (!db.open()) {
     qDebug() << "cannot connect to database";
   } else {

@@ -103,7 +103,7 @@ void ChartWidget::drawPieChart(const QList<QPair<QString, int>> &data) {
 
     for (const auto &pair : data) {
         QString category = pair.first;
-        int totalSpent = pair.second;
+        int totalSpent = abs(pair.second);
         QPieSlice *slice = series->append(category, totalSpent);
         slice->setLabel(category + ": " + QString::number(totalSpent));
     }
